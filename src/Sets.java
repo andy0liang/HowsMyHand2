@@ -2,7 +2,7 @@ public class Sets {
 
     public static long hasRoyalFlush(boolean[][] arr) {
         for (int suit = 1; suit < 5; suit++) {
-            if (arr[10][suit] && arr[11][suit] && arr[12][suit] && arr[13][suit] && arr[4][suit]) {
+            if (arr[10][suit] && arr[11][suit] && arr[12][suit] && arr[13][suit] && arr[14][suit]) {
                 return 90000000000L;
             }
         }
@@ -33,7 +33,7 @@ public class Sets {
         long pair = hasPair(arr);
         long triple = has3ofAKind(arr);
         if (pair != -1 && triple != -1) {
-            return 60000000000L + (triple % 10000) * 100 + (pair % 1000000);
+            return 60000000000L + ((triple / 10000) % 100) * 100 + ((pair / 1000000) % 100);
         }
         return -1;
     }
@@ -67,7 +67,7 @@ public class Sets {
 
     public static long has3ofAKind(boolean[][] arr) {
         for (int i = 14; i >= 2; i--) {
-            if(rowContains(arr, i) >= 3){
+            if(rowContains(arr, i) == 3){
                 int[] best = getHighest(arr, i);
                 return 30000000000L + i * 10000 + best[0] * 100 + best[1];
             }
@@ -79,7 +79,7 @@ public class Sets {
         int counter = 0;
         int[] p = new int[2];
         for(int i = 14; i >= 2; i--){
-            if(rowContains(arr, i) >= 2){
+            if(rowContains(arr, i) == 2){
                 p[counter] = i;
                 counter++;
             }
@@ -92,9 +92,9 @@ public class Sets {
 
     public static long hasPair(boolean[][] arr) {
         for(int i = 14; i >= 2; i--){
-            if(rowContains(arr, i) >= 2){
+            if(rowContains(arr, i) == 2){
                 int[] best = getHighest(arr, i);
-                return 10000000000L + i * 1000000 + best[0] * 10000 + best[1] * 100 + best[2] * 1;
+                return 10000000000L + i * 1000000 + best[0] * 10000 + best[1] * 100 + best[2];
             }
         }
         return -1;
@@ -118,12 +118,12 @@ public class Sets {
     public static int[] getHighest(boolean[][] arr, int exclude1, int exclude2){
         int[] best = new int[5];
         int index = 0;
-        for(int i = 14; i >= 2 && index < 5; i++){
+        for(int i = 14; i >= 2 && index < 5; i--){
             if(i == exclude1 || i == exclude2){
                 continue;
             }
             for(int suit = 1; suit < 5 && index < 5; suit++){
-                if(arr[((i - 1)%13)+1][suit]){
+                if(arr[i][suit]){
                     best[index] = i;
                     index++;
                 }
@@ -135,12 +135,12 @@ public class Sets {
     public static int[] getHighest(boolean[][] arr, int exclude){
         int[] best = new int[5];
         int index = 0;
-        for(int i = 14; i >= 2 && index < 5; i++){
+        for(int i = 14; i >= 2 && index < 5; i--){
             if(i == exclude){
                 continue;
             }
             for(int suit = 1; suit < 5 && index < 5; suit++){
-                if(arr[((i - 1)%13)+1][suit]){
+                if(arr[i][suit]){
                     best[index] = i;
                     index++;
                 }
