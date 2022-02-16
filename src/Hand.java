@@ -32,7 +32,7 @@ public class Hand {
     private int c1;
     private int c2;
     private final int[] community;
-    private long score = -1;
+    private long score;
     private String status = "unknown";
 
     public Hand(String card1, String card2) {
@@ -41,10 +41,12 @@ public class Hand {
         add(this.c1);
         add(this.c2);
         community = new int[5];
+        this.score = -1L;
     }
 
     public Hand() {
         community = new int[5];
+        this.score = -1L;
     }
 
     public void addToCommunity(int card) {
@@ -134,14 +136,11 @@ public class Hand {
     }
 
     public String getStatus(){
-        if(status.equals("unknown")){
-            getScore();
-        }
         return status;
     }
 
     public long getScore(){
-        if(score != -1){
+        if(!status.equals("unknown")){
             return score;
         }
         long temp;
