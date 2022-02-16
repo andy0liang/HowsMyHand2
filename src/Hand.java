@@ -9,6 +9,7 @@ public class Hand {
     J = 11
     Q = 12
     K = 13
+    A = 14
 
 
     Spade = 4
@@ -23,11 +24,11 @@ public class Hand {
     public static final String red = "\033[38;5;196m";
     public static final String green = "\033[38;5;34m";
     private static final String[] names = new String[]{"invalid", "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-    private static final String[] shortnames = new String[]{"", "A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"};
+    private static final String[] shortnames = new String[]{"", "A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"};
     private static final String[] suitnames = new String[]{"", "Diamonds", "Clubs", "Hearts", "Spades"};
     private static final String[] shortsuits = new String[]{"", "D", "C", "H", "S"};
     private static final String[] suiticons = new String[]{"", "♦", "♣", "♥", "♠"};
-    private final boolean[][] arr = new boolean[14][5];
+    private final boolean[][] arr = new boolean[15][5];
     private int c1;
     private int c2;
     private final int[] community;
@@ -64,17 +65,23 @@ public class Hand {
         int val = card / 10;
         int suit = card % 10;
         this.arr[val][suit] = true;
+        if(val == 14){
+            this.arr[1][suit] = true;
+        }
     }
 
     private void remove(int card) {
         int val = card / 10;
         int suit = card % 10;
         this.arr[val][suit] = false;
+        if(val == 14){
+            this.arr[1][suit] = false;
+        }
     }
 
     public int cardStringToInt(String card) {
         int num;
-        num = java.util.Arrays.asList(shortnames).indexOf(card.substring(0, 1).toUpperCase()) * 10;
+        num = java.util.Arrays.asList(shortnames).lastIndexOf(card.substring(0, 1).toUpperCase()) * 10;
         num += java.util.Arrays.asList(shortsuits).indexOf(card.substring(1).toUpperCase());
         return num;
     }
