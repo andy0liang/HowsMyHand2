@@ -13,7 +13,7 @@ public class Main {
             System.out.print("Card 2: ");
             String c2 = input.nextLine();
             Hand hand = new Hand(c1, c2);
-            System.out.println("Your hand: " + hand.getHand());
+            System.out.println("\nYour hand: " + hand.getHand()+"\n");
             System.out.print("How many opponents? ");
             int numO = Integer.parseInt(input.nextLine());
             hand.simulate(numO);
@@ -30,7 +30,8 @@ public class Main {
             hand.add(r1);
             hand.add(r2);
             hand.add(r3);
-            System.out.println("Community cards: " + hand.getCommunity());
+            System.out.println("\nYour hand: " + hand.getHand());
+            System.out.println("Community cards: " + hand.getCommunity()+"\n");
             System.out.print("How many opponents? ");
             numO = Integer.parseInt(input.nextLine());
             hand.simulate(numO);
@@ -40,7 +41,8 @@ public class Main {
                 continue;
             }
             hand.add(t);
-            System.out.println("Community cards: " + hand.getCommunity());
+            System.out.println("\nYour hand: " + hand.getHand());
+            System.out.println("Community cards: " + hand.getCommunity()+"\n");
             System.out.print("How many opponents? ");
             numO = Integer.parseInt(input.nextLine());
             hand.simulate(numO);
@@ -50,7 +52,8 @@ public class Main {
                 continue;
             }
             hand.add(r);
-            System.out.println("Community cards: " + hand.getCommunity());
+            System.out.println("\nYour hand: " + hand.getHand());
+            System.out.println("Community cards: " + hand.getCommunity()+"\n");
             System.out.print("How many opponents? ");
             numO = Integer.parseInt(input.nextLine());
             hand.simulate(numO);

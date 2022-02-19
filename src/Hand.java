@@ -299,10 +299,19 @@ public class Hand {
         long start = System.nanoTime();
         int[] results = monteCarlo(numOpponents, 100000);
         long end = System.nanoTime();
-        System.out.println("Win: "+round(results[0] / 1000.0, 1) + "%");
+        System.out.println();
+        if(((100000 - results[1] - results[0]) / (numOpponents + 0.0)) < results[0]){
+            System.out.print("✅");
+            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+green+round(results[0] / 1000.0, 1) + "%"+ANSI_RESET+"   vs.   " +ANSI_WHITE_BACKGROUND+ANSI_BLACK+ round((100000 - results[0] - results[1]) / (numOpponents+0.0) / 1000.0, 1)+"%"+ANSI_RESET);
+        }
+        else{
+            System.out.print("❌");
+            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+red+round(results[0] / 1000.0, 1) + "%"+ANSI_RESET+"   vs.   " + ANSI_WHITE_BACKGROUND+ANSI_BLACK+round((100000 - results[0] - results[1]) / (numOpponents+0.0) / 1000.0, 1)+"%"+ANSI_RESET);
+        }
+
         System.out.println("Tie: "+round(results[1] / 1000.0, 1) + "%");
-        System.out.println("Lose: "+round(results[2] / 1000.0, 1) + "%");
         System.out.println("Time taken (seconds): "+round((end - start) / 1000000000.0, 3));
+        System.out.println();
     }
 
 
