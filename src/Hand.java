@@ -31,36 +31,71 @@ public class Hand {
     private final boolean[][] arr = new boolean[15][5];
     private int c1;
     private int c2;
-    private final int[] community;
+    private Integer[] community;
     private long score;
+    private int numCommunity = 0;
     private String status = "unknown";
+    public static Random random = new Random();
+    private ArrayDeque<Integer> deck = new ArrayDeque<>();
 
     public Hand(String card1, String card2) {
         this.c1 = cardStringToInt(card1);
         this.c2 = cardStringToInt(card2);
         add(this.c1);
         add(this.c2);
-        community = new int[5];
+        community = new Integer[5];
         this.score = -1L;
+
     }
 
     public Hand() {
-        community = new int[5];
+        community = new Integer[5];
         this.score = -1L;
     }
 
-    public void addToCommunity(int card) {
-        for (int x = 0; x < community.length; x++) {
-            if (community[x] == 0) {
-                community[x] = card;
-                return;
+    public void makeDeck(){
+        deck.clear();
+        List <Integer> com = Arrays.asList(community);
+        ArrayList<Integer> cards = new ArrayList<>();
+        for(int value = 2; value <= 14; value++){
+            for(int suit = 1; suit <= 4; suit++){
+                int card = value * 10 + suit;
+                if(c1 == card || c2 == card || com.contains(card)){
+                    continue;
+                }
+                cards.add(card);
             }
         }
+        Collections.shuffle(cards);
+        deck.addAll(cards);
+    }
+
+    public void addToCommunity(int card) {
+        community[numCommunity] = card;
+        numCommunity++;
     }
 
     public void add(String card) {
         add(cardStringToInt(card));
         addToCommunity(cardStringToInt(card));
+    }
+
+    public void add(boolean[][] arr, int card){
+        int val = card / 10;
+        int suit = card % 10;
+        arr[val][suit] = true;
+        if(val == 14){
+            arr[1][suit] = true;
+        }
+    }
+
+    public void remove(boolean[][] arr, int card){
+        int val = card / 10;
+        int suit = card % 10;
+        arr[val][suit] = false;
+        if(val == 14){
+            arr[1][suit] = false;
+        }
     }
 
     public void add(int card) {
@@ -106,6 +141,7 @@ public class Hand {
     public void inputHand(String card1, String card2) {
         this.c1 = cardStringToInt(card1);
         this.c2 = cardStringToInt(card2);
+
     }
 
     public String cardIntToShortString(int card) {
@@ -140,6 +176,10 @@ public class Hand {
     }
 
     public long getScore(){
+        return getScore(this.arr);
+    }
+
+    public long getScore(boolean[][] arr){
         if(!status.equals("unknown")){
             return score;
         }
@@ -204,6 +244,90 @@ public class Hand {
         return temp;
     }
 
+    public int[] monteCarlo(int numOpponents, int numRounds){
+
+        int[] results = new int[3];
+        boolean[][] prevcopy = copyOf(arr);
+        for(int i = 0; i < numRounds; i++){
+            makeDeck();
+            int[][] hands = new int[numOpponents][2];
+            for(int x = numCommunity; x < community.length; x++){
+                community[x] = deck.pop();
+                add(prevcopy, community[x]);
+            }
+            long myscore = getScore(prevcopy);
+            remove(prevcopy, c1);
+            remove(prevcopy, c2);
+            long best = 0;
+            for(int n = 0; n < hands.length; n++){
+                hands[n][0] = deck.pop();
+                hands[n][1] = deck.pop();
+            }
+            for(int n = 0; n < hands.length; n++){
+                add(prevcopy, hands[n][0]);
+                add(prevcopy, hands[n][1]);
+                long score = getScore(prevcopy);
+                if(score >= best){
+                    best = score;
+                }
+                remove(prevcopy, hands[n][0]);
+                remove(prevcopy, hands[n][1]);
+            }
+            if(myscore > best){
+                results[0]++;
+            }
+            else if(myscore < best){
+                results[2]++;
+            }
+            else{
+                results[1]++;
+            }
+            add(prevcopy, c1);
+            add(prevcopy, c2);
+            for(int x = numCommunity; x < community.length; x++){
+                remove(prevcopy, community[x]);
+                community[x] = 0;
+            }
+        }
+        return results;
+    }
+
+
+
+
+
+    public boolean[][] copyOf(boolean[][] arr){
+        boolean[][] b = new boolean[arr.length][arr[0].length];
+        for(int x = 0; x < arr.length; x++){
+            for(int y = 0; y < arr[0].length; y++){
+                b[x][y] = arr[x][y];
+            }
+        }
+        return b;
+    }
+
+    public void addRandom(int num){
+        for(int x = 0; x < num; x++){
+            addRandom(this.arr);
+        }
+    }
+
+    public void addRandom(boolean[][] arr, int num){
+        for(int x = 0; x < num; x++){
+            addRandom(arr);
+        }
+    }
+
+    public int addRandom(boolean[][] arr){
+        int value = random.nextInt(13) + 2;
+        int suit = random.nextInt(4) + 1;
+        while(arr[value][suit]){
+            value = random.nextInt(13) + 2;
+            suit = random.nextInt(4) + 1;
+        }
+        arr[value][suit] = true;
+        return value*10 + suit;
+    }
 
     @Override
     public String toString() {
