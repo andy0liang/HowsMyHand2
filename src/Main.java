@@ -16,6 +16,13 @@ public class Main {
             System.out.println("\nYour hand: " + hand.getHand()+"\n");
             System.out.print("How many opponents? ");
             int numO = Integer.parseInt(input.nextLine());
+
+            System.out.print("Number of simulations (default 100,000): ");
+            String numS = input.nextLine();
+            if(!numS.isBlank()){
+                hand.setNumSimulations(Integer.parseInt(numS));
+            }
+
             hand.simulate(numO);
             System.out.println("Enter flop: ");
             System.out.print("Card 1: ");

@@ -37,6 +37,7 @@ public class Hand {
     private String status = "unknown";
     public static Random random = new Random();
     private ArrayDeque<Integer> deck = new ArrayDeque<>();
+    private int numSimulations = 100000;
 
     public Hand(String card1, String card2) {
         this.c1 = cardStringToInt(card1);
@@ -68,6 +69,10 @@ public class Hand {
         }
         Collections.shuffle(cards);
         deck.addAll(cards);
+    }
+
+    public void setNumSimulations(int num){
+        numSimulations = num;
     }
 
     public void addToCommunity(int card) {
@@ -297,19 +302,19 @@ public class Hand {
 
     public void simulate(int numOpponents){
         long start = System.nanoTime();
-        int[] results = monteCarlo(numOpponents, 100000);
+        int[] results = monteCarlo(numOpponents, numSimulations);
         long end = System.nanoTime();
         System.out.println();
-        if(((100000 - results[1] - results[0]) / (numOpponents + 0.0)) < results[0]){
+        if(((numSimulations - results[1] - results[0]) / (numOpponents + 0.0)) < results[0]){
             System.out.print("✅");
-            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+green+round(results[0] / 1000.0, 1) + "%"+ANSI_RESET+"   vs.   " +ANSI_WHITE_BACKGROUND+ANSI_BLACK+ round((100000 - results[0] - results[1]) / (numOpponents+0.0) / 1000.0, 1)+"%"+ANSI_RESET);
+            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+green+round(results[0] / (numSimulations / 100.0), 1) + "%"+ANSI_RESET+"   vs.   " +ANSI_WHITE_BACKGROUND+ANSI_BLACK+ round((numSimulations - results[0] - results[1]) / (numOpponents+0.0) * (numSimulations / 100.0), 1)+"%"+ANSI_RESET);
         }
         else{
             System.out.print("❌");
-            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+red+round(results[0] / 1000.0, 1) + "%"+ANSI_RESET+"   vs.   " + ANSI_WHITE_BACKGROUND+ANSI_BLACK+round((100000 - results[0] - results[1]) / (numOpponents+0.0) / 1000.0, 1)+"%"+ANSI_RESET);
+            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+red+round(results[0] / (numSimulations / 100.0), 1) + "%"+ANSI_RESET+"   vs.   " + ANSI_WHITE_BACKGROUND+ANSI_BLACK+round((numSimulations - results[0] - results[1]) / (numOpponents+0.0) / (numSimulations / 100.0), 1)+"%"+ANSI_RESET);
         }
 
-        System.out.println("Tie: "+round(results[1] / 1000.0, 1) + "%");
+        System.out.println("Tie: "+round(results[1] / (numSimulations / 100.0), 1) + "%");
         System.out.println("Time taken (seconds): "+round((end - start) / 1000000000.0, 3));
         System.out.println();
     }
