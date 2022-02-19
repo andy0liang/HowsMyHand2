@@ -17,18 +17,15 @@ public class Hand {
     Club = 2
     Diamond = 1
      */
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_WHITE_BACKGROUND = "\033[48;5;15m";
-    public static final String blue = "\033[38;5;27m";
-    public static final String red = "\033[38;5;196m";
-    public static final String green = "\033[38;5;34m";
-    private static final String[] names = new String[]{"invalid", "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_WHITE_BACKGROUND = "\033[48;5;15m";
+    private static final String blue = "\033[38;5;27m";
+    private static final String red = "\033[38;5;196m";
+    private static final String green = "\033[38;5;34m";
     private static final String[] shortnames = new String[]{"", "A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"};
-    private static final String[] suitnames = new String[]{"", "Diamonds", "Clubs", "Hearts", "Spades"};
     private static final String[] shortsuits = new String[]{"", "D", "C", "H", "S"};
     private static final String[] suiticons = new String[]{"", "♦", "♣", "♥", "♠"};
-    public static Random random = new Random();
     private final boolean[][] arr = new boolean[15][5];
     private final Integer[] community;
     private final ArrayDeque<Integer> deck = new ArrayDeque<>();
@@ -58,7 +55,7 @@ public class Hand {
         return (double) Math.round(value * scale) / scale;
     }
 
-    public void makeDeck() {
+    private void makeDeck() {
         deck.clear();
         List<Integer> com = Arrays.asList(community);
         ArrayList<Integer> cards = new ArrayList<>();
@@ -79,7 +76,7 @@ public class Hand {
         numSimulations = num;
     }
 
-    public void addToCommunity(int card) {
+    private void addToCommunity(int card) {
         community[numCommunity] = card;
         numCommunity++;
     }
@@ -89,7 +86,7 @@ public class Hand {
         addToCommunity(cardStringToInt(card));
     }
 
-    public void add(boolean[][] arr, int card) {
+    private void add(boolean[][] arr, int card) {
         int val = card / 10;
         int suit = card % 10;
         arr[val][suit] = true;
@@ -98,7 +95,7 @@ public class Hand {
         }
     }
 
-    public void remove(boolean[][] arr, int card) {
+    private void remove(boolean[][] arr, int card) {
         int val = card / 10;
         int suit = card % 10;
         arr[val][suit] = false;
@@ -107,7 +104,7 @@ public class Hand {
         }
     }
 
-    public void add(int card) {
+    private void add(int card) {
         int val = card / 10;
         int suit = card % 10;
         this.arr[val][suit] = true;
@@ -116,23 +113,14 @@ public class Hand {
         }
     }
 
-    private void remove(int card) {
-        int val = card / 10;
-        int suit = card % 10;
-        this.arr[val][suit] = false;
-        if (val == 14) {
-            this.arr[1][suit] = false;
-        }
-    }
-
-    public int cardStringToInt(String card) {
+    private int cardStringToInt(String card) {
         int num;
         num = java.util.Arrays.asList(shortnames).lastIndexOf(card.substring(0, 1).toUpperCase()) * 10;
         num += java.util.Arrays.asList(shortsuits).indexOf(card.substring(1).toUpperCase());
         return num;
     }
 
-    public String getSuitColor(int suitindex) {
+    private String getSuitColor(int suitindex) {
         switch (suitindex) {
             case 4:
                 return ANSI_BLACK;
@@ -152,19 +140,8 @@ public class Hand {
         this.c2 = cardStringToInt(card2);
     }
 
-    public String cardIntToShortString(int card) {
+    private String cardIntToShortString(int card) {
         return ANSI_WHITE_BACKGROUND + getSuitColor(card % 10) + shortnames[card / 10] + suiticons[card % 10] + ANSI_RESET;
-    }
-
-    public String cardIntToString(int card) {
-        return ANSI_WHITE_BACKGROUND + getSuitColor(card % 10) + suiticons[card % 10] + ANSI_RESET + names[card / 10] + " of " + suitnames[card % 10] + ANSI_RESET;
-    }
-
-    public String getHand(boolean longform) {
-        if (longform) {
-            return cardIntToString(this.c1) + "\n" + cardIntToString(this.c2);
-        }
-        return getHand();
     }
 
     public String getHand() {
@@ -187,7 +164,7 @@ public class Hand {
         return getScore(this.arr);
     }
 
-    public long getScore(boolean[][] arr) {
+    private long getScore(boolean[][] arr) {
         long temp;
         temp = Sets.hasRoyalFlush(arr);
         if (temp != -1) {
@@ -249,7 +226,7 @@ public class Hand {
         return temp;
     }
 
-    public int[] monteCarlo(int numOpponents, int numRounds) {
+    private int[] monteCarlo(int numOpponents, int numRounds) {
         int[] results = new int[3];
         boolean[][] prevcopy = copyOf(arr);
         for (int i = 0; i < numRounds; i++) {
@@ -311,7 +288,7 @@ public class Hand {
         System.out.println();
     }
 
-    public boolean[][] copyOf(boolean[][] arr) {
+    private boolean[][] copyOf(boolean[][] arr) {
         boolean[][] b = new boolean[arr.length][arr[0].length];
         for (int x = 0; x < arr.length; x++) {
             for (int y = 0; y < arr[0].length; y++) {
