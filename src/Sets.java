@@ -58,7 +58,7 @@ public class Sets {
 
     public static long hasStraight(boolean[][] arr) {
         for (int i = 10; i >= 1; i--) {
-            if (rowContains(arr, i) > 0 && rowContains(arr, i + 1) > 0 && rowContains(arr, i + 2) > 0 && rowContains(arr, i + 3) > 0 && rowContains(arr, i + 4) > 0) {
+            if (consecutive(arr, i, 5)) {
                 return 40000000000L + i + 3;
             }
         }
@@ -103,6 +103,72 @@ public class Sets {
     public static long highCard(boolean[][] arr) {
         int[] best = getHighest(arr, -1);
         return (long) best[0] * 100000000 + best[1] * 1000000 + best[2] * 10000 + best[3] * 100 + best[4];
+    }
+
+    public static String flushDraws(boolean[][] arr, int numCommunity){
+        if(numCommunity == 3){
+
+            for(int suit = 1; suit <= 4; suit++){
+                int counter = 0;
+                for(int x = 2; x <= 14; x++){
+                    if(arr[x][suit]){
+                        counter++;
+                    }
+                }
+                if(counter == 3){
+                    return "Backdoor Flush Draw\n";
+                }
+                if(counter == 4){
+                    return "Flush Draw\n";
+                }
+            }
+        }
+        if(numCommunity == 4){
+            for(int suit = 1; suit <= 4; suit++){
+                int counter = 0;
+                for(int x = 2; x <= 14; x++){
+                    if(arr[x][suit]){
+                        counter++;
+                    }
+                }
+                if(counter == 4){
+                    return "Flush Draw\n";
+                }
+            }
+        }
+        return "";
+    }
+
+    public static String straightDraws(boolean[][] arr, int numCommunity){
+        if(numCommunity == 3){
+            for(int x = 2; x < 12; x++){
+                if(consecutive(arr, x, 4)){
+                    return "Straight Draw\n";
+                }
+            }
+            for(int x = 2; x < 13; x++){
+                if(consecutive(arr, x, 3)){
+                    return "Backdoor Straight Draw\n";
+                }
+            }
+        }
+        if(numCommunity == 4){
+            for(int x = 2; x < 12; x++){
+                if(consecutive(arr, x, 4)){
+                    return "Straight Draw\n";
+                }
+            }
+        }
+        return "";
+    }
+
+    public static boolean consecutive(boolean[][] arr, int row, int num){
+        for(int x = row; x < row+num; x++){
+            if(rowContains(arr, x) == 0){
+                return false;
+            }
+        }
+        return true;
     }
 
     public static int rowContains(boolean[][] arr, int row) {

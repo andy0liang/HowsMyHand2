@@ -165,7 +165,7 @@ public class Hand {
     }
 
     public String getHand() {
-        return cardIntToShortString(this.c1) + " " + cardIntToShortString(this.c2);
+        return cardIntToShortString(this.c1) + " " + cardIntToShortString(this.c2) + "\n" + Sets.flushDraws(arr, numCommunity) + Sets.straightDraws(arr, numCommunity);
     }
 
     public String getCommunity(){
@@ -330,28 +330,6 @@ public class Hand {
         return b;
     }
 
-    public void addRandom(int num){
-        for(int x = 0; x < num; x++){
-            addRandom(this.arr);
-        }
-    }
-
-    public void addRandom(boolean[][] arr, int num){
-        for(int x = 0; x < num; x++){
-            addRandom(arr);
-        }
-    }
-
-    public int addRandom(boolean[][] arr){
-        int value = random.nextInt(13) + 2;
-        int suit = random.nextInt(4) + 1;
-        while(arr[value][suit]){
-            value = random.nextInt(13) + 2;
-            suit = random.nextInt(4) + 1;
-        }
-        arr[value][suit] = true;
-        return value*10 + suit;
-    }
 
     @Override
     public String toString() {

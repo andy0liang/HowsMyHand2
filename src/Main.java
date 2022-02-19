@@ -3,9 +3,21 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
+
 
         System.out.println("Welcome!");
+        while(true) {
+            try {
+                run();
+            } catch (Exception e) {
+                System.out.println("Invalid entry, please restart\n\n");
+            }
+        }
+
+    }
+
+    public static void run(){
+        Scanner input = new Scanner(System.in);
         while(true) {
             System.out.println("Enter your hand: ");
             System.out.print("Card 1: ");
@@ -69,4 +81,5 @@ public class Main {
             System.out.println("\n\n");
         }
     }
+
 }
