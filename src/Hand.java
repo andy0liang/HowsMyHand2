@@ -28,15 +28,15 @@ public class Hand {
     private static final String[] suitnames = new String[]{"", "Diamonds", "Clubs", "Hearts", "Spades"};
     private static final String[] shortsuits = new String[]{"", "D", "C", "H", "S"};
     private static final String[] suiticons = new String[]{"", "♦", "♣", "♥", "♠"};
+    public static Random random = new Random();
     private final boolean[][] arr = new boolean[15][5];
+    private final Integer[] community;
+    private final ArrayDeque<Integer> deck = new ArrayDeque<>();
     private int c1;
     private int c2;
-    private Integer[] community;
     private long score;
     private int numCommunity = 0;
     private String status = "unknown";
-    public static Random random = new Random();
-    private ArrayDeque<Integer> deck = new ArrayDeque<>();
     private int numSimulations = 100000;
 
     public Hand(String card1, String card2) {
@@ -46,7 +46,6 @@ public class Hand {
         add(this.c2);
         community = new Integer[5];
         this.score = -1L;
-
     }
 
     public Hand() {
@@ -54,14 +53,19 @@ public class Hand {
         this.score = -1L;
     }
 
-    public void makeDeck(){
+    private static double round(double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
+
+    public void makeDeck() {
         deck.clear();
-        List <Integer> com = Arrays.asList(community);
+        List<Integer> com = Arrays.asList(community);
         ArrayList<Integer> cards = new ArrayList<>();
-        for(int value = 2; value <= 14; value++){
-            for(int suit = 1; suit <= 4; suit++){
+        for (int value = 2; value <= 14; value++) {
+            for (int suit = 1; suit <= 4; suit++) {
                 int card = value * 10 + suit;
-                if(c1 == card || c2 == card || com.contains(card)){
+                if (c1 == card || c2 == card || com.contains(card)) {
                     continue;
                 }
                 cards.add(card);
@@ -71,7 +75,7 @@ public class Hand {
         deck.addAll(cards);
     }
 
-    public void setNumSimulations(int num){
+    public void setNumSimulations(int num) {
         numSimulations = num;
     }
 
@@ -85,20 +89,20 @@ public class Hand {
         addToCommunity(cardStringToInt(card));
     }
 
-    public void add(boolean[][] arr, int card){
+    public void add(boolean[][] arr, int card) {
         int val = card / 10;
         int suit = card % 10;
         arr[val][suit] = true;
-        if(val == 14){
+        if (val == 14) {
             arr[1][suit] = true;
         }
     }
 
-    public void remove(boolean[][] arr, int card){
+    public void remove(boolean[][] arr, int card) {
         int val = card / 10;
         int suit = card % 10;
         arr[val][suit] = false;
-        if(val == 14){
+        if (val == 14) {
             arr[1][suit] = false;
         }
     }
@@ -107,7 +111,7 @@ public class Hand {
         int val = card / 10;
         int suit = card % 10;
         this.arr[val][suit] = true;
-        if(val == 14){
+        if (val == 14) {
             this.arr[1][suit] = true;
         }
     }
@@ -116,7 +120,7 @@ public class Hand {
         int val = card / 10;
         int suit = card % 10;
         this.arr[val][suit] = false;
-        if(val == 14){
+        if (val == 14) {
             this.arr[1][suit] = false;
         }
     }
@@ -146,7 +150,6 @@ public class Hand {
     public void inputHand(String card1, String card2) {
         this.c1 = cardStringToInt(card1);
         this.c2 = cardStringToInt(card2);
-
     }
 
     public String cardIntToShortString(int card) {
@@ -168,75 +171,74 @@ public class Hand {
         return cardIntToShortString(this.c1) + " " + cardIntToShortString(this.c2) + "\n" + Sets.flushDraws(arr, numCommunity) + Sets.straightDraws(arr, numCommunity);
     }
 
-    public String getCommunity(){
+    public String getCommunity() {
         String result = "";
-        for(int x = 0; x < community.length; x++){
+        for (int x = 0; x < community.length; x++) {
             result += cardIntToShortString(community[x]) + " ";
         }
         return result;
     }
 
-    public String getStatus(){
+    public String getStatus() {
         return status;
     }
 
-    public long getScore(){
+    public long getScore() {
         return getScore(this.arr);
     }
 
-    public long getScore(boolean[][] arr){
-
+    public long getScore(boolean[][] arr) {
         long temp;
         temp = Sets.hasRoyalFlush(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "Royal Flush";
             score = temp;
             return temp;
         }
         temp = Sets.hasStraightFlush(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "Straight Flush";
             score = temp;
             return temp;
         }
         temp = Sets.has4ofAKind(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "4 of a Kind";
             score = temp;
             return temp;
         }
         temp = Sets.hasFullHouse(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "Full House";
             score = temp;
             return temp;
         }
         temp = Sets.hasFlush(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "Flush";
             score = temp;
             return temp;
         }
         temp = Sets.hasStraight(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "Straight";
             score = temp;
             return temp;
         }
         temp = Sets.has3ofAKind(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "3 of a Kind";
             score = temp;
             return temp;
         }
         temp = Sets.hasTwoPair(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "Two Pair";
             score = temp;
             return temp;
         }
         temp = Sets.hasPair(arr);
-        if(temp != -1){
+        if (temp != -1) {
             status = "One Pair";
             score = temp;
             return temp;
@@ -247,14 +249,13 @@ public class Hand {
         return temp;
     }
 
-    public int[] monteCarlo(int numOpponents, int numRounds){
-
+    public int[] monteCarlo(int numOpponents, int numRounds) {
         int[] results = new int[3];
         boolean[][] prevcopy = copyOf(arr);
-        for(int i = 0; i < numRounds; i++){
+        for (int i = 0; i < numRounds; i++) {
             makeDeck();
             int[][] hands = new int[numOpponents][2];
-            for(int x = numCommunity; x < community.length; x++){
+            for (int x = numCommunity; x < community.length; x++) {
                 community[x] = deck.pop();
                 add(prevcopy, community[x]);
             }
@@ -262,32 +263,30 @@ public class Hand {
             remove(prevcopy, c1);
             remove(prevcopy, c2);
             long best = 0;
-            for(int n = 0; n < hands.length; n++){
+            for (int n = 0; n < hands.length; n++) {
                 hands[n][0] = deck.pop();
                 hands[n][1] = deck.pop();
             }
-            for(int n = 0; n < hands.length; n++){
+            for (int n = 0; n < hands.length; n++) {
                 add(prevcopy, hands[n][0]);
                 add(prevcopy, hands[n][1]);
                 long score = getScore(prevcopy);
-                if(score >= best){
+                if (score >= best) {
                     best = score;
                 }
                 remove(prevcopy, hands[n][0]);
                 remove(prevcopy, hands[n][1]);
             }
-            if(myscore > best){
+            if (myscore > best) {
                 results[0]++;
-            }
-            else if(myscore < best){
+            } else if (myscore < best) {
                 results[2]++;
-            }
-            else{
+            } else {
                 results[1]++;
             }
             add(prevcopy, c1);
             add(prevcopy, c2);
-            for(int x = numCommunity; x < community.length; x++){
+            for (int x = numCommunity; x < community.length; x++) {
                 remove(prevcopy, community[x]);
                 community[x] = 0;
             }
@@ -295,41 +294,32 @@ public class Hand {
         return results;
     }
 
-    private static double round (double value, int precision) {
-        int scale = (int) Math.pow(10, precision);
-        return (double) Math.round(value * scale) / scale;
-    }
-
-    public void simulate(int numOpponents){
+    public void simulate(int numOpponents) {
         long start = System.nanoTime();
         int[] results = monteCarlo(numOpponents, numSimulations);
         long end = System.nanoTime();
         System.out.println();
-        if(((numSimulations - results[1] - results[0]) / (numOpponents + 0.0)) < results[0]){
+        if (((numSimulations - results[1] - results[0]) / (numOpponents + 0.0)) < results[0]) {
             System.out.print("✅");
-            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+green+round(results[0] / (numSimulations / 100.0), 1) + "%"+ANSI_RESET+"   vs.   " +ANSI_WHITE_BACKGROUND+ANSI_BLACK+ round((numSimulations - results[0] - results[1]) / (numOpponents+0.0) * (numSimulations / 100.0), 1)+"%"+ANSI_RESET);
-        }
-        else{
+            System.out.println("Win: " + ANSI_WHITE_BACKGROUND + green + round(results[0] / (numSimulations / 100.0), 1) + "%" + ANSI_RESET + "   vs.   " + ANSI_WHITE_BACKGROUND + ANSI_BLACK + round((numSimulations - results[0] - results[1]) / (numOpponents + 0.0) * (numSimulations / 100.0), 1) + "%" + ANSI_RESET);
+        } else {
             System.out.print("❌");
-            System.out.println("Win: "+ANSI_WHITE_BACKGROUND+red+round(results[0] / (numSimulations / 100.0), 1) + "%"+ANSI_RESET+"   vs.   " + ANSI_WHITE_BACKGROUND+ANSI_BLACK+round((numSimulations - results[0] - results[1]) / (numOpponents+0.0) / (numSimulations / 100.0), 1)+"%"+ANSI_RESET);
+            System.out.println("Win: " + ANSI_WHITE_BACKGROUND + red + round(results[0] / (numSimulations / 100.0), 1) + "%" + ANSI_RESET + "   vs.   " + ANSI_WHITE_BACKGROUND + ANSI_BLACK + round((numSimulations - results[0] - results[1]) / (numOpponents + 0.0) / (numSimulations / 100.0), 1) + "%" + ANSI_RESET);
         }
-
-        System.out.println("Tie: "+round(results[1] / (numSimulations / 100.0), 1) + "%");
-        System.out.println("Time taken (seconds): "+round((end - start) / 1000000000.0, 3));
+        System.out.println("Tie: " + round(results[1] / (numSimulations / 100.0), 1) + "%");
+        System.out.println("Time taken (seconds): " + round((end - start) / 1000000000.0, 3));
         System.out.println();
     }
 
-
-    public boolean[][] copyOf(boolean[][] arr){
+    public boolean[][] copyOf(boolean[][] arr) {
         boolean[][] b = new boolean[arr.length][arr[0].length];
-        for(int x = 0; x < arr.length; x++){
-            for(int y = 0; y < arr[0].length; y++){
+        for (int x = 0; x < arr.length; x++) {
+            for (int y = 0; y < arr[0].length; y++) {
                 b[x][y] = arr[x][y];
             }
         }
         return b;
     }
-
 
     @Override
     public String toString() {
