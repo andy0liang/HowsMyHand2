@@ -180,9 +180,7 @@ public class Hand {
     }
 
     public long getScore(boolean[][] arr){
-        if(!status.equals("unknown")){
-            return score;
-        }
+
         long temp;
         temp = Sets.hasRoyalFlush(arr);
         if(temp != -1){
@@ -292,8 +290,20 @@ public class Hand {
         return results;
     }
 
+    private static double round (double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
 
-
+    public void simulate(int numOpponents){
+        long start = System.nanoTime();
+        int[] results = monteCarlo(numOpponents, 100000);
+        long end = System.nanoTime();
+        System.out.println("Win: "+round(results[0] / 1000.0, 1) + "%");
+        System.out.println("Tie: "+round(results[1] / 1000.0, 1) + "%");
+        System.out.println("Lose: "+round(results[2] / 1000.0, 1) + "%");
+        System.out.println("Time taken (seconds): "+round((end - start) / 1000000000.0, 3));
+    }
 
 
     public boolean[][] copyOf(boolean[][] arr){
